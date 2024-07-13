@@ -1,14 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import todo from "../../img/image.jpg";
 import "../../styles/index.css";
 
 const Home = () => {
-	const [tasks, setTasks] = useState([
-		{ id: 1, title: "Make the bed" },
-		{ id: 2, title: "Wash my hands" },
-		{ id: 3, title: "Eat" },
-		{ id: 4, title: "Walk the dog" }
-	]);
+	const [tasks, setTasks] = useState([]);
 
 	const backgroundStyle = {
 		backgroundImage: `url(${todo})`,
@@ -26,17 +21,19 @@ const Home = () => {
 		width: "30rem",
 	};
 
-	const handleKeyDown = (e) => {
-		if (e.key === "Enter") {
-			const value = e.target.value.trim();
-			if (value !== "") {
-				const newTask = {
-					id: tasks.length + 1,
-					title: value
-				};
-				setTasks([...tasks, newTask]);
-				e.target.value = "";
+	const handleKeyDown =  async (e) => {
+		try {
+			if (e.key === "Enter") {
+				if (tasks.label.trim() !== "") {
+
+					const response = await fetch(`${URLBASE}/todo/users/anthonny`, {
+						
+					} )
+	
+				}
 			}
+		} catch (error) {
+			console.log(error)
 		}
 	};
 
@@ -44,6 +41,21 @@ const Home = () => {
 		const updatedTasks = tasks.filter(task => task.id !== id);
 		setTasks(updatedTasks);
 	};
+
+	async function  getAllTask () {
+		try {
+			fetch("https://playground.4geeks.com/todo/users/anthonny")
+			.then((response)=> response.json())
+			.then((data)=> setTasks(data.todos))
+			.catch((error)=> console.log(error))
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	useEffect(()=>{
+		getAllTask()
+	},[])
 
 	return (
 		<div style={backgroundStyle}>
@@ -76,7 +88,7 @@ const Home = () => {
 						tasks.map(task => (
 							<li className="list-group-item" key={task.id}>
 								<i className="fa-regular fa-square-check"></i>
-								<div className="list-item-content">{task.title}</div>
+								<div className="list-item-content">{task.label}</div>
 								<button
 									type="button"
 									className="btn-close"
